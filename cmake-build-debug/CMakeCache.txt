@@ -15,6 +15,15 @@
 ########################
 
 //Value Computed by CMake
+CEN3031-Project_BINARY_DIR:STATIC=C:/Users/test/Documents/SWE_Project/CEN3031-Project/cmake-build-debug
+
+//Value Computed by CMake
+CEN3031-Project_IS_TOP_LEVEL:STATIC=ON
+
+//Value Computed by CMake
+CEN3031-Project_SOURCE_DIR:STATIC=C:/Users/test/Documents/SWE_Project/CEN3031-Project
+
+//Value Computed by CMake
 CEN3031_Project_BINARY_DIR:STATIC=C:/Users/test/Documents/SWE_Project/CEN3031-Project/cmake-build-debug
 
 //Value Computed by CMake
@@ -166,7 +175,7 @@ CMAKE_PROJECT_DESCRIPTION:STATIC=
 CMAKE_PROJECT_HOMEPAGE_URL:STATIC=
 
 //Value Computed by CMake
-CMAKE_PROJECT_NAME:STATIC=CEN3031_Project
+CMAKE_PROJECT_NAME:STATIC=CEN3031-Project
 
 //Path to a program.
 CMAKE_RANLIB:FILEPATH=C:/Program Files/JetBrains/CLion 2022.3.1/bin/mingw/bin/ranlib.exe
