@@ -1,3 +1,4 @@
+//This file is a template provided by ImGui. Code written for this project will be contained mostly in other files.
 // Dear ImGui: standalone example application for DirectX 11
 
 // Learn about Dear ImGui:
@@ -5,7 +6,7 @@
 // - Getting Started      https://dearimgui.com/getting-started
 // - Documentation        https://dearimgui.com/docs (same as your local docs/ folder).
 // - Introduction, links and more at the top of imgui.cpp
-
+#pragma once
 #include "imgui.h"
 #include "imgui_impl_win32.h"
 #include "imgui_impl_dx11.h"
@@ -101,7 +102,7 @@ int main(int, char**)
     bool show_demo_window = true;
     bool show_another_window = false;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
+    GUI Library;
     // Main loop
     bool done = false;
     while (!done)
@@ -140,8 +141,7 @@ int main(int, char**)
         ImGui_ImplDX11_NewFrame();
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
-
-        GUI::RunGUI();
+        Library.RunGUI();
         // Rendering
         ImGui::Render();
         const float clear_color_with_alpha[4] = { clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w };
