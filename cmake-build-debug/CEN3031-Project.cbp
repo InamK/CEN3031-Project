@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="CEN3031-Project"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="E:/CWorkSpace/CEN3031-Project-XZ/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="D:/JetBrains/CLion 2024.1.4/bin/mingw/bin/mingw32-make.exe -f &quot;E:/CWorkSpace/CEN3031-Project-XZ/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="D:/JetBrains/CLion 2024.1.4/bin/mingw/bin/mingw32-make.exe -f &quot;E:/CWorkSpace/CEN3031-Project-XZ/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="D:/JetBrains/CLion 2024.1.4/bin/mingw/bin/mingw32-make.exe -f &quot;E:/CWorkSpace/CEN3031-Project-XZ/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="D:/JetBrains/CLion 2024.1.4/bin/mingw/bin/mingw32-make.exe -f &quot;E:/CWorkSpace/CEN3031-Project-XZ/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="CEN3031-Project">
+				<Option output="E:/CWorkSpace/CEN3031-Project-XZ/cmake-build-debug/CEN3031-Project.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="E:/CWorkSpace/CEN3031-Project-XZ/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DIMGUI_IMPL_API="/>
+					<Add directory="E:/CWorkSpace/CEN3031-Project-XZ/mysql-connector-c-6.1.11-winx64/include"/>
+					<Add directory="E:/CWorkSpace/CEN3031-Project-XZ/include"/>
+					<Add directory="E:/CWorkSpace/CEN3031-Project-XZ/imgui"/>
+					<Add directory="D:/JetBrains/CLion 2024.1.4/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++"/>
+					<Add directory="D:/JetBrains/CLion 2024.1.4/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/x86_64-w64-mingw32"/>
+					<Add directory="D:/JetBrains/CLion 2024.1.4/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/backward"/>
+					<Add directory="D:/JetBrains/CLion 2024.1.4/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/13.1.0/include"/>
+					<Add directory="D:/JetBrains/CLion 2024.1.4/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/13.1.0/../../../../include"/>
+					<Add directory="D:/JetBrains/CLion 2024.1.4/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/13.1.0/include-fixed"/>
+					<Add directory="D:/JetBrains/CLion 2024.1.4/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/13.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="D:/JetBrains/CLion 2024.1.4/bin/mingw/bin/mingw32-make.exe -f &quot;E:/CWorkSpace/CEN3031-Project-XZ/cmake-build-debug/Makefile&quot;  VERBOSE=1 CEN3031-Project"/>
+					<CompileFile command="D:/JetBrains/CLion 2024.1.4/bin/mingw/bin/mingw32-make.exe -f &quot;E:/CWorkSpace/CEN3031-Project-XZ/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="D:/JetBrains/CLion 2024.1.4/bin/mingw/bin/mingw32-make.exe -f &quot;E:/CWorkSpace/CEN3031-Project-XZ/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="D:/JetBrains/CLion 2024.1.4/bin/mingw/bin/mingw32-make.exe -f &quot;E:/CWorkSpace/CEN3031-Project-XZ/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="CEN3031-Project/fast">
+				<Option output="E:/CWorkSpace/CEN3031-Project-XZ/cmake-build-debug/CEN3031-Project.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="E:/CWorkSpace/CEN3031-Project-XZ/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DIMGUI_IMPL_API="/>
+					<Add directory="E:/CWorkSpace/CEN3031-Project-XZ/mysql-connector-c-6.1.11-winx64/include"/>
+					<Add directory="E:/CWorkSpace/CEN3031-Project-XZ/include"/>
+					<Add directory="E:/CWorkSpace/CEN3031-Project-XZ/imgui"/>
+					<Add directory="D:/JetBrains/CLion 2024.1.4/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++"/>
+					<Add directory="D:/JetBrains/CLion 2024.1.4/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/x86_64-w64-mingw32"/>
+					<Add directory="D:/JetBrains/CLion 2024.1.4/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/backward"/>
+					<Add directory="D:/JetBrains/CLion 2024.1.4/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/13.1.0/include"/>
+					<Add directory="D:/JetBrains/CLion 2024.1.4/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/13.1.0/../../../../include"/>
+					<Add directory="D:/JetBrains/CLion 2024.1.4/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/13.1.0/include-fixed"/>
+					<Add directory="D:/JetBrains/CLion 2024.1.4/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/13.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="D:/JetBrains/CLion 2024.1.4/bin/mingw/bin/mingw32-make.exe -f &quot;E:/CWorkSpace/CEN3031-Project-XZ/cmake-build-debug/Makefile&quot;  VERBOSE=1 CEN3031-Project/fast"/>
+					<CompileFile command="D:/JetBrains/CLion 2024.1.4/bin/mingw/bin/mingw32-make.exe -f &quot;E:/CWorkSpace/CEN3031-Project-XZ/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="D:/JetBrains/CLion 2024.1.4/bin/mingw/bin/mingw32-make.exe -f &quot;E:/CWorkSpace/CEN3031-Project-XZ/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="D:/JetBrains/CLion 2024.1.4/bin/mingw/bin/mingw32-make.exe -f &quot;E:/CWorkSpace/CEN3031-Project-XZ/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="E:/CWorkSpace/CEN3031-Project-XZ/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="D:/JetBrains/CLion 2024.1.4/bin/mingw/bin/mingw32-make.exe -f &quot;E:/CWorkSpace/CEN3031-Project-XZ/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="D:/JetBrains/CLion 2024.1.4/bin/mingw/bin/mingw32-make.exe -f &quot;E:/CWorkSpace/CEN3031-Project-XZ/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="D:/JetBrains/CLion 2024.1.4/bin/mingw/bin/mingw32-make.exe -f &quot;E:/CWorkSpace/CEN3031-Project-XZ/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="D:/JetBrains/CLion 2024.1.4/bin/mingw/bin/mingw32-make.exe -f &quot;E:/CWorkSpace/CEN3031-Project-XZ/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="E:/CWorkSpace/CEN3031-Project-XZ/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="D:/JetBrains/CLion 2024.1.4/bin/mingw/bin/mingw32-make.exe -f &quot;E:/CWorkSpace/CEN3031-Project-XZ/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="D:/JetBrains/CLion 2024.1.4/bin/mingw/bin/mingw32-make.exe -f &quot;E:/CWorkSpace/CEN3031-Project-XZ/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="D:/JetBrains/CLion 2024.1.4/bin/mingw/bin/mingw32-make.exe -f &quot;E:/CWorkSpace/CEN3031-Project-XZ/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="D:/JetBrains/CLion 2024.1.4/bin/mingw/bin/mingw32-make.exe -f &quot;E:/CWorkSpace/CEN3031-Project-XZ/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="E:/CWorkSpace/CEN3031-Project-XZ/imgui/imgui.cpp">
+			<Option target="CEN3031-Project"/>
+		</Unit>
+		<Unit filename="E:/CWorkSpace/CEN3031-Project-XZ/imgui/imgui.h">
+			<Option target="CEN3031-Project"/>
+		</Unit>
+		<Unit filename="E:/CWorkSpace/CEN3031-Project-XZ/imgui/imgui_demo.cpp">
+			<Option target="CEN3031-Project"/>
+		</Unit>
+		<Unit filename="E:/CWorkSpace/CEN3031-Project-XZ/imgui/imgui_draw.cpp">
+			<Option target="CEN3031-Project"/>
+		</Unit>
+		<Unit filename="E:/CWorkSpace/CEN3031-Project-XZ/imgui/imgui_impl_dx11.cpp">
+			<Option target="CEN3031-Project"/>
+		</Unit>
+		<Unit filename="E:/CWorkSpace/CEN3031-Project-XZ/imgui/imgui_impl_dx11.h">
+			<Option target="CEN3031-Project"/>
+		</Unit>
+		<Unit filename="E:/CWorkSpace/CEN3031-Project-XZ/imgui/imgui_impl_win32.cpp">
+			<Option target="CEN3031-Project"/>
+		</Unit>
+		<Unit filename="E:/CWorkSpace/CEN3031-Project-XZ/imgui/imgui_impl_win32.h">
+			<Option target="CEN3031-Project"/>
+		</Unit>
+		<Unit filename="E:/CWorkSpace/CEN3031-Project-XZ/imgui/imgui_tables.cpp">
+			<Option target="CEN3031-Project"/>
+		</Unit>
+		<Unit filename="E:/CWorkSpace/CEN3031-Project-XZ/imgui/imgui_widgets.cpp">
+			<Option target="CEN3031-Project"/>
+		</Unit>
+		<Unit filename="E:/CWorkSpace/CEN3031-Project-XZ/src/GUI_Layout.cpp">
+			<Option target="CEN3031-Project"/>
+		</Unit>
+		<Unit filename="E:/CWorkSpace/CEN3031-Project-XZ/src/database.cpp">
+			<Option target="CEN3031-Project"/>
+		</Unit>
+		<Unit filename="E:/CWorkSpace/CEN3031-Project-XZ/src/main.cpp">
+			<Option target="CEN3031-Project"/>
+		</Unit>
+		<Unit filename="E:/CWorkSpace/CEN3031-Project-XZ/src/user_manager.cpp">
+			<Option target="CEN3031-Project"/>
+		</Unit>
+		<Unit filename="E:/CWorkSpace/CEN3031-Project-XZ/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
