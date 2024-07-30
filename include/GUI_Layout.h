@@ -3,6 +3,7 @@
 #include <ctime>
 #include "cmath"
 #include <cstring>
+#include "user_manager.h"
 //Class contains functionality for UI
 class GUI{
     //bools for permissions
@@ -14,7 +15,7 @@ class GUI{
     int day = 1;
     int year;
     //Page specifier
-    unsigned int page = 0;
+    unsigned int page = 2; //This is login screen
 public:
     //Constructor
     GUI();
@@ -24,4 +25,10 @@ private:
     //Functions for individual pages
     void calendar();
     void Date();
+    void Home();
+    void Books();
+    void Events();
+    void Event_Create();
+    void CreateResource();
+    void Members();
 };

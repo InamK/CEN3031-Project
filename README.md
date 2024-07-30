@@ -2,6 +2,7 @@
 
 ## 1. How to run
 1. You should copy the `mysql-connector-c-6.1.11-winx64\lib\libmysql.dll` and `mysql-connector-c-6.1.11-winx64\lib\libmysql.lib` in **cmake-build-debug** Folder.
+2. You must have Directx 11 installed to run the GUI
 
 
 ## 2. DATABASE design
