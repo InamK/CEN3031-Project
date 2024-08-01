@@ -166,9 +166,9 @@ void GUI::calendar() {
         if (i != 0) {
             Padding = 3 * cellPadding;
         }
-        ImVec2 lineStart = ImVec2(calendarStartPos.x, calendarStartPos.y + i * (cellSize.y + Padding));
+        ImVec2 lineStart = ImVec2(calendarStartPos.x, calendarStartPos.y + float(i) * (cellSize.y + Padding));
         ImVec2 lineEnd = ImVec2(calendarStartPos.x + daysInWeek * (cellSize.x + cellPadding),
-                                calendarStartPos.y + i * (cellSize.y + Padding));
+                                calendarStartPos.y + float(i) * (cellSize.y + Padding));
         draw_list->AddLine(lineStart, lineEnd, IM_COL32(200, 200, 200, 255));
     }
 
@@ -179,8 +179,8 @@ void GUI::calendar() {
         if (i != 0) {
             Padding = cellPadding;
         }
-        ImVec2 lineStart = ImVec2(calendarStartPos.x + i * (cellSize.x + Padding), calendarStartPos.y);
-        ImVec2 lineEnd = ImVec2(calendarStartPos.x + i * (cellSize.x + Padding),
+        ImVec2 lineStart = ImVec2(calendarStartPos.x + float(i) * (cellSize.x + Padding), calendarStartPos.y);
+        ImVec2 lineEnd = ImVec2(calendarStartPos.x + float(i) * (cellSize.x + Padding),
                                 calendarStartPos.y + float(rows) * (cellSize.y + VPadding));
         draw_list->AddLine(lineStart, lineEnd, IM_COL32(200, 200, 200, 255));
     }
@@ -260,12 +260,9 @@ void GUI::Date() {
         date = date + " " + std::to_string(day) + suffix + ", " + std::to_string(year);
         char *charArray = new char[date.length() + 1];
         std::strcpy(charArray, date.c_str());
-        if (page == 1) {
-            ImGui::Text("%s", charArray);
-            ImGui::Button("RSVP");
-        }
+        ImGui::Text("%s", charArray);
+        ImGui::Button("RSVP");
         delete[] charArray;
-
         if (employee) {
             if (ImGui::Button("Add Event")) {
                 page = 7;
@@ -333,31 +330,34 @@ void GUI::Home() {
 
 void GUI::Books() {
     if(page == 3){
-
+        //Search entry
+        //feild narrowers
     }
 }
 
 void GUI::Events() {
     if(page == 4){
-
+        //All unapproved events
+        //By month?
     }
 }
 
 
 void GUI::CreateResource() {
     if(page == 5){
-
+        //Enterable information for new book
     }
 }
 
 void GUI::Members() {
     if(page == 6){
-
+        //all members
+        //hire fire admin
     }
 }
 
 void GUI::Event_Create() {
     if(page == 7){
-
+        //Create feilds.
     }
 }
