@@ -1,5 +1,5 @@
 //
-// Created by star on 2024/7/14.
+// Created by XZ on 2024/7/14.
 //
 
 // database.cpp
@@ -38,6 +38,9 @@ MYSQL_RES* Database::fetchQuery(const std::string& query) {
         std::cerr << "MySQL query error: " << mysql_error(conn) << std::endl;
         return nullptr;
     }
-    return mysql_store_result(conn);
+    MYSQL_RES* result = mysql_store_result(conn);
+    if (!result && mysql_field_count(conn) > 0) {
+        std::cerr << "MySQL store result error: " << mysql_error(conn) << std::endl;
+    }
+    return result;
 }
-

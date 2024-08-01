@@ -22,9 +22,11 @@ add_executable(CEN3031-Project
         imgui/imgui_demo.cpp
 
         src/main.cpp
+        src/GUI_Layout.cpp
         src/database.cpp
         src/user_manager.cpp
-        src/GUI_Layout.cpp
+        src/book_manager.cpp
+        src/event_manager.cpp
 #        src/mysql_test.cpp
 )
 

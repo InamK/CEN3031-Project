@@ -1,6 +1,7 @@
 #include "GUI_Layout.h"
 
 void GUI::RunGUI() {
+        //Code copied from ImGui demo
         static bool opt_fullscreen = true;
         static bool opt_padding = false;
         static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
@@ -47,49 +48,52 @@ void GUI::RunGUI() {
             ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
             ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
         }
-
-
-        if (ImGui::BeginMenuBar()) {
-            if (ImGui::BeginMenu("Options")) {
-                // Disabling fullscreen would allow the window to be moved to the front of other windows,
-                // which we can't undo at the moment without finer window depth/z control.
-                ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen);
-                ImGui::MenuItem("Padding", NULL, &opt_padding);
-                ImGui::Separator();
-
-                if (ImGui::MenuItem("Flag: NoDockingOverCentralNode", "",
-                                    (dockspace_flags & ImGuiDockNodeFlags_NoDockingOverCentralNode) !=
-                                    0)) { dockspace_flags ^= ImGuiDockNodeFlags_NoDockingOverCentralNode; }
-                if (ImGui::MenuItem("Flag: NoDockingSplit", "", (dockspace_flags & ImGuiDockNodeFlags_NoDockingSplit) !=
-                                                                0)) { dockspace_flags ^= ImGuiDockNodeFlags_NoDockingSplit; }
-                if (ImGui::MenuItem("Flag: NoUndocking", "", (dockspace_flags & ImGuiDockNodeFlags_NoUndocking) !=
-                                                             0)) { dockspace_flags ^= ImGuiDockNodeFlags_NoUndocking; }
-                if (ImGui::MenuItem("Flag: NoResize", "", (dockspace_flags & ImGuiDockNodeFlags_NoResize) !=
-                                                          0)) { dockspace_flags ^= ImGuiDockNodeFlags_NoResize; }
-                if (ImGui::MenuItem("Flag: AutoHideTabBar", "", (dockspace_flags & ImGuiDockNodeFlags_AutoHideTabBar) !=
-                                                                0)) { dockspace_flags ^= ImGuiDockNodeFlags_AutoHideTabBar; }
-                if (ImGui::MenuItem("Flag: PassthruCentralNode", "",
-                                    (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode) != 0,
-                                    opt_fullscreen)) { dockspace_flags ^= ImGuiDockNodeFlags_PassthruCentralNode; }
-                ImGui::Separator();
-
-                ImGui::EndMenu();
-            }
-
-            ImGui::EndMenuBar();
-        }
-
+        // End of copied code
+        // Switch case for pages
         ImGui::Begin("Library");
         switch (page) {
             case 0:
                 calendar();
             case 1:
                 Date();
+            case 2:
+                Home();
+            case 3:
+                Books();
+            case 4:
+                Events();
+            case 5:
+                CreateResource();
+            case 6:
+                Members();
+            case 7:
+                Event_Create();
         }
         ImGui::End();
         ImGui::Begin("Navigation");
+        if(!login){
+            if(ImGui::Button("Login/Signup")){
+                page = 2;
+            }
+        }
+        if(ImGui::Button("Resources")){
+            page = 3;
+        }
+        if(employee){
+            if(ImGui::Button("Add Resource")){
+                page = 5;
+            }
+        }
         if(ImGui::Button("Calendar")){
             page = 0;
+        }
+        if(admin){
+            if(ImGui::Button("Account Management")){
+                page = 6;
+            }
+            if(ImGui::Button("Event Approvals")){
+                page = 4;
+            }
         }
         ImGui::End();
         ImGui::End();
@@ -162,9 +166,9 @@ void GUI::calendar() {
         if (i != 0) {
             Padding = 3 * cellPadding;
         }
-        ImVec2 lineStart = ImVec2(calendarStartPos.x, calendarStartPos.y + i * (cellSize.y + Padding));
+        ImVec2 lineStart = ImVec2(calendarStartPos.x, calendarStartPos.y + float(i) * (cellSize.y + Padding));
         ImVec2 lineEnd = ImVec2(calendarStartPos.x + daysInWeek * (cellSize.x + cellPadding),
-                                calendarStartPos.y + i * (cellSize.y + Padding));
+                                calendarStartPos.y + float(i) * (cellSize.y + Padding));
         draw_list->AddLine(lineStart, lineEnd, IM_COL32(200, 200, 200, 255));
     }
 
@@ -175,8 +179,8 @@ void GUI::calendar() {
         if (i != 0) {
             Padding = cellPadding;
         }
-        ImVec2 lineStart = ImVec2(calendarStartPos.x + i * (cellSize.x + Padding), calendarStartPos.y);
-        ImVec2 lineEnd = ImVec2(calendarStartPos.x + i * (cellSize.x + Padding),
+        ImVec2 lineStart = ImVec2(calendarStartPos.x + float(i) * (cellSize.x + Padding), calendarStartPos.y);
+        ImVec2 lineEnd = ImVec2(calendarStartPos.x + float(i) * (cellSize.x + Padding),
                                 calendarStartPos.y + float(rows) * (cellSize.y + VPadding));
         draw_list->AddLine(lineStart, lineEnd, IM_COL32(200, 200, 200, 255));
     }
@@ -202,68 +206,158 @@ void GUI::calendar() {
 }
 
 void GUI::Date() {
-    std::string date;
-    switch (month) {
-        case 1:
-            date = "January";
-            break;
-        case 2:
-            date = "February";
-            break;
-        case 3:
-            date = "March";
-            break;
-        case 4:
-            date = "April";
-            break;
-        case 5:
-            date = "May";
-            break;
-        case 6:
-            date = "June";
-            break;
-        case 7:
-            date = "July";
-            break;
-        case 8:
-            date = "August";
-            break;
-        case 9:
-            date = "September";
-            break;
-        case 10:
-            date = "October";
-            break;
-        case 11:
-            date = "November";
-            break;
-        case 12:
-            date = "December";
-            break;
-    }
-    std::string suffix;
-    int digit = day % 10;
-    if(digit == 1 && day != 11){
-        suffix = "st";
-    } else if(digit == 2 && day != 12){
-        suffix = "nd";
-    } else if(digit == 3 && day != 13){
-        suffix = "rd";
-    } else {
-        suffix = "th";
-    }
-    date = date + " " + std::to_string(day) + suffix + ", " + std::to_string(year);
-    char* charArray = new char[date.length() + 1];
-    std::strcpy(charArray, date.c_str());
     if(page == 1) {
+        std::string date;
+        switch (month) {
+            case 1:
+                date = "January";
+                break;
+            case 2:
+                date = "February";
+                break;
+            case 3:
+                date = "March";
+                break;
+            case 4:
+                date = "April";
+                break;
+            case 5:
+                date = "May";
+                break;
+            case 6:
+                date = "June";
+                break;
+            case 7:
+                date = "July";
+                break;
+            case 8:
+                date = "August";
+                break;
+            case 9:
+                date = "September";
+                break;
+            case 10:
+                date = "October";
+                break;
+            case 11:
+                date = "November";
+                break;
+            case 12:
+                date = "December";
+                break;
+        }
+        std::string suffix;
+        int digit = day % 10;
+        if (digit == 1 && day != 11) {
+            suffix = "st";
+        } else if (digit == 2 && day != 12) {
+            suffix = "nd";
+        } else if (digit == 3 && day != 13) {
+            suffix = "rd";
+        } else {
+            suffix = "th";
+        }
+        date = date + " " + std::to_string(day) + suffix + ", " + std::to_string(year);
+        char *charArray = new char[date.length() + 1];
+        std::strcpy(charArray, date.c_str());
         ImGui::Text("%s", charArray);
         ImGui::Button("RSVP");
-    }
-    delete[] charArray;
-
-    if(employee){
-        if(ImGui::Button("Add Event")){
-            page = 3;
+        delete[] charArray;
+        if (employee) {
+            if (ImGui::Button("Add Event")) {
+                page = 7;
+            }
         }
+    }
+}
+
+void GUI::Home() {
+    if(page == 2) {
+        // Declare variables to hold input
+        static char username[128] = "";
+        static char password[128] = "";
+        std::string role = "Member";
+        bool login_failed = false;
+        // Input fields for the username and password
+        ImGui::InputText("Username", username, IM_ARRAYSIZE(username));
+        ImGui::InputText("Password", password, IM_ARRAYSIZE(password), ImGuiInputTextFlags_Password);
+        // Button for the login action
+        if (ImGui::Button("Login")) {
+            // Example authentication check
+            if (true) {
+                // Login successful
+                login = true;
+                login_failed = false;
+                role = username;
+                if(role != "Member"){
+                    if(role == "Admin"){
+                        admin = true;
+                    }
+                    employee = true;
+                }
+                page = 3;
+            } else {
+                // Login failed
+                login_failed = true;
+            }
+        }
+        // Button for the sign-up action
+        ImGui::SameLine();
+        if(ImGui::Button("Sign Up")){
+            if (true) {
+                // Login successful
+                login = true;
+                login_failed = false;
+                role = username;
+                if(role != "Member"){
+                    if(role == "Admin"){
+                        admin = true;
+                    }
+                    employee = true;
+                    page = 3;
+                }
+            } else {
+                // Login failed
+                login_failed = true;
+            }
+        }
+        // Display a message if login failed
+        if (login_failed) {
+            ImGui::TextColored(ImVec4(1, 0, 0, 1), "Login or Sign Up failed! Please try again.");
+        }
+    }
+}
+
+void GUI::Books() {
+    if(page == 3){
+        //Search entry
+        //feild narrowers
+    }
+}
+
+void GUI::Events() {
+    if(page == 4){
+        //All unapproved events
+        //By month?
+    }
+}
+
+
+void GUI::CreateResource() {
+    if(page == 5){
+        //Enterable information for new book
+    }
+}
+
+void GUI::Members() {
+    if(page == 6){
+        //all members
+        //hire fire admin
+    }
+}
+
+void GUI::Event_Create() {
+    if(page == 7){
+        //Create feilds.
     }
 }

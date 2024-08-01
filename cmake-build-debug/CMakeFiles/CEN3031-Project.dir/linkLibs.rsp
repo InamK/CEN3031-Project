@@ -1,1 +1,0 @@
-  -L"E:/CWorkSpace/CEN3031-Project-XZ/mysql-connector-c-6.1.11-winx64/lib"  -llibmysql -ld3d11 -ld3dcompiler -ldwmapi -llibmysql -ld3d11 -ld3dcompiler -ldwmapi -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 
