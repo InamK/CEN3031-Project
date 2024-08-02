@@ -8,6 +8,3 @@ Event::Event(std::string name, std::string description, int hour, int minute, in
     this->month = month;
     this->day = day;
 }
-
-
-void Events::AddEvent() {}

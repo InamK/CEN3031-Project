@@ -16,6 +16,7 @@ class GUI{
     int year;
     //Page specifier
     unsigned int page = 2; //This is login screen
+    std::string user; //Username kept track of.
 public:
     //Constructor
     GUI();
@@ -31,4 +32,5 @@ private:
     void Event_Create();
     void CreateResource();
     void Members();
+    void Confirmations();
 };

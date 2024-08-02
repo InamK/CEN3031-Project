@@ -68,8 +68,11 @@ void GUI::RunGUI() {
                 Members();
             case 7:
                 Event_Create();
+            case 8:
+                Confirmations();
         }
         ImGui::End();
+        // Buttons for navigation menu. Some are only visible for employees/Admins
         ImGui::Begin("Navigation");
         if(!login){
             if(ImGui::Button("Login/Signup")){
@@ -79,9 +82,12 @@ void GUI::RunGUI() {
         if(ImGui::Button("Resources")){
             page = 3;
         }
-        if(employee){
+        if(employee || admin){
             if(ImGui::Button("Add Resource")){
                 page = 5;
+            }
+            if(ImGui::Button("Checkout/Return Confirmations")){
+                page = 8;
             }
         }
         if(ImGui::Button("Calendar")){
@@ -324,14 +330,56 @@ void GUI::Home() {
         // Display a message if login failed
         if (login_failed) {
             ImGui::TextColored(ImVec4(1, 0, 0, 1), "Login or Sign Up failed! Please try again.");
+        } else {
+            user = username;
         }
     }
 }
 
 void GUI::Books() {
     if(page == 3){
-        //Search entry
-        //feild narrowers
+        static char query[256] = "";
+        ImGui::InputText("Title/Author", query, IM_ARRAYSIZE(query));
+        //Dropdown for resource type
+        const char* items[] = { "Book", "DVD"};
+        static int currentItem = 0; // Index of the currently selected item
+        // Create a combo box (drop-down menu)
+        if (ImGui::BeginCombo("Resource Type", items[currentItem])){
+            // Loop through all items
+            for (int n = 0; n < IM_ARRAYSIZE(items); n++){
+                // Check if the item is selected
+                bool isSelected = (currentItem == n);
+                // Display the item
+                if (ImGui::Selectable(items[n], isSelected)){
+                    currentItem = n; // Update the selected item
+                }
+                // Set the initial focus when opening menu
+                if (isSelected){
+                    ImGui::SetItemDefaultFocus();
+                }
+            }
+            ImGui::EndCombo();
+        }
+        //Dropdown for genre
+        const char* genres[] = { "Horror", "Fantasy", "Sci-Fi", "Nonfiction", "Mystery", "Thriller", "Self Help", "Romance"};
+        static int genre = 0; // Index of the currently selected item
+        // Create a combo box (drop-down menu)
+        if (ImGui::BeginCombo("Genre", genres[genre])){
+            // Loop through all items
+            for (int n = 0; n < IM_ARRAYSIZE(genres); n++){
+                // Check if the item is selected
+                bool isSelected = (genre == n);
+                // Display the item
+                if (ImGui::Selectable(genres[n], isSelected)){
+                    genre = n; // Update the selected item
+                }
+                // Set the initial focus when opening menu
+                if (isSelected){
+                    ImGui::SetItemDefaultFocus();
+                }
+            }
+            ImGui::EndCombo();
+        }
     }
 }
 
@@ -346,6 +394,52 @@ void GUI::Events() {
 void GUI::CreateResource() {
     if(page == 5){
         //Enterable information for new book
+        static char query[256] = "";
+        static char author[128] = "";
+        static char desc[1024] = "";
+        ImGui::InputText("Title", query, IM_ARRAYSIZE(query));
+        ImGui::InputText("Author", author, IM_ARRAYSIZE(author));
+        ImGui::InputText("Description", desc, IM_ARRAYSIZE(desc));
+        //Dropdown for resource type
+        const char* items[] = { "Book", "DVD"};
+        static int currentItem = 0; // Index of the currently selected item
+        // Create a combo box (drop-down menu)
+        if (ImGui::BeginCombo("Resource Type", items[currentItem])){
+            // Loop through all items
+            for (int n = 0; n < IM_ARRAYSIZE(items); n++){
+                // Check if the item is selected
+                bool isSelected = (currentItem == n);
+                // Display the item
+                if (ImGui::Selectable(items[n], isSelected)){
+                    currentItem = n; // Update the selected item
+                }
+                // Set the initial focus when opening menu
+                if (isSelected){
+                    ImGui::SetItemDefaultFocus();
+                }
+            }
+            ImGui::EndCombo();
+        }
+        //Dropdown for genre
+        const char* genres[] = { "Horror", "Fantasy", "Sci-Fi", "Nonfiction", "Mystery", "Thriller", "Self Help", "Romance"};
+        static int genre = 0; // Index of the currently selected item
+        // Create a combo box (drop-down menu)
+        if (ImGui::BeginCombo("Genre", genres[genre])){
+            // Loop through all items
+            for (int n = 0; n < IM_ARRAYSIZE(genres); n++){
+                // Check if the item is selected
+                bool isSelected = (genre == n);
+                // Display the item
+                if (ImGui::Selectable(genres[n], isSelected)){
+                    genre = n; // Update the selected item
+                }
+                // Set the initial focus when opening menu
+                if (isSelected){
+                    ImGui::SetItemDefaultFocus();
+                }
+            }
+            ImGui::EndCombo();
+        }
     }
 }
 
@@ -358,6 +452,31 @@ void GUI::Members() {
 
 void GUI::Event_Create() {
     if(page == 7){
-        //Create feilds.
+        static char title [128] = "";
+        static char desc[1024] = "";
+        static int hour;
+        static int minute;
+        ImGui::InputText("Event Title", title, IM_ARRAYSIZE(title));
+        ImGui::InputText("Event Description", desc, IM_ARRAYSIZE(desc));
+        ImGui::InputInt("Hour", &hour);
+        ImGui::InputInt("Minute", &minute);
+        if(hour < 1){
+            hour = 1;
+        } else if(hour > 12){
+            hour = 12;
+        }
+        if(minute < 0){
+            minute = 59;
+            hour--;
+        } else if(minute > 59){
+            minute = 0;
+            hour++;
+        }
+    }
+}
+
+void GUI::Confirmations() {
+    if(page == 8){
+
     }
 }
