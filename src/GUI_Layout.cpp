@@ -338,7 +338,7 @@ void GUI::Home() {
 
 void GUI::Books() {
     if(page == 3){
-        static char query[128] = "";
+        static char query[256] = "";
         ImGui::InputText("Title/Author", query, IM_ARRAYSIZE(query));
         //Dropdown for resource type
         const char* items[] = { "Book", "DVD"};
@@ -394,6 +394,52 @@ void GUI::Events() {
 void GUI::CreateResource() {
     if(page == 5){
         //Enterable information for new book
+        static char query[256] = "";
+        static char author[128] = "";
+        static char desc[1024] = "";
+        ImGui::InputText("Title", query, IM_ARRAYSIZE(query));
+        ImGui::InputText("Author", author, IM_ARRAYSIZE(author));
+        ImGui::InputText("Description", desc, IM_ARRAYSIZE(desc));
+        //Dropdown for resource type
+        const char* items[] = { "Book", "DVD"};
+        static int currentItem = 0; // Index of the currently selected item
+        // Create a combo box (drop-down menu)
+        if (ImGui::BeginCombo("Resource Type", items[currentItem])){
+            // Loop through all items
+            for (int n = 0; n < IM_ARRAYSIZE(items); n++){
+                // Check if the item is selected
+                bool isSelected = (currentItem == n);
+                // Display the item
+                if (ImGui::Selectable(items[n], isSelected)){
+                    currentItem = n; // Update the selected item
+                }
+                // Set the initial focus when opening menu
+                if (isSelected){
+                    ImGui::SetItemDefaultFocus();
+                }
+            }
+            ImGui::EndCombo();
+        }
+        //Dropdown for genre
+        const char* genres[] = { "Horror", "Fantasy", "Sci-Fi", "Nonfiction", "Mystery", "Thriller", "Self Help", "Romance"};
+        static int genre = 0; // Index of the currently selected item
+        // Create a combo box (drop-down menu)
+        if (ImGui::BeginCombo("Genre", genres[genre])){
+            // Loop through all items
+            for (int n = 0; n < IM_ARRAYSIZE(genres); n++){
+                // Check if the item is selected
+                bool isSelected = (genre == n);
+                // Display the item
+                if (ImGui::Selectable(genres[n], isSelected)){
+                    genre = n; // Update the selected item
+                }
+                // Set the initial focus when opening menu
+                if (isSelected){
+                    ImGui::SetItemDefaultFocus();
+                }
+            }
+            ImGui::EndCombo();
+        }
     }
 }
 
