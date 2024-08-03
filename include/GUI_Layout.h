@@ -3,7 +3,10 @@
 #include <ctime>
 #include "cmath"
 #include <cstring>
+#include "database.h"
 #include "user_manager.h"
+#include "event_manager.h"
+#include "book_manager.h"
 //Class contains functionality for UI
 class GUI{
     //bools for permissions
@@ -17,9 +20,15 @@ class GUI{
     //Page specifier
     unsigned int page = 2; //This is login screen
     std::string user; //Username kept track of.
+    //Backend connectors
+    Database db;
+    UserManager users;
+    BookManager books;
+    EventManager events;
+
 public:
     //Constructor
-    GUI();
+    GUI(Database& db, UserManager& users, EventManager& events, BookManager& books);
     //primary function
     void RunGUI();
 private:

@@ -106,7 +106,7 @@ void GUI::RunGUI() {
         //ImGui::ShowDemoWindow();
     }
 
-GUI::GUI() {
+GUI::GUI(Database& db, UserManager& users, EventManager& events, BookManager& books) : db(db), users(users), events(events), books(books){
     //Get current year and month
     std::time_t t = std::time(nullptr);
     std::tm *now = std::localtime(&t);
@@ -289,12 +289,20 @@ void GUI::Home() {
         ImGui::InputText("Password", password, IM_ARRAYSIZE(password), ImGuiInputTextFlags_Password);
         // Button for the login action
         if (ImGui::Button("Login")) {
+            //Password hash
+            int total = 0;
+            std::string pass = password;
+            for (int i = 0; i < pass.length(); ++i) {
+                int asciiValue = static_cast<int>(pass[i]);
+                int position = i + 1; // 1-based index
+                total += asciiValue * position;
+            }
+            pass = std::to_string(total);
             // Example authentication check
-            if (true) {
+            if (users.login(username, pass, role)) {
                 // Login successful
                 login = true;
                 login_failed = false;
-                role = username;
                 if(role != "Member"){
                     if(role == "Admin"){
                         admin = true;
@@ -310,18 +318,20 @@ void GUI::Home() {
         // Button for the sign-up action
         ImGui::SameLine();
         if(ImGui::Button("Sign Up")){
-            if (true) {
+            //Password Hash
+            int total = 0;
+            std::string pass = password;
+            for (int i = 0; i < pass.length(); ++i) {
+                int asciiValue = static_cast<int>(pass[i]);
+                int position = i + 1; // 1-based index
+                total += asciiValue * position;
+            }
+            pass = std::to_string(total);
+            if (users.createAccount(username, pass, role)) {
                 // Login successful
                 login = true;
                 login_failed = false;
-                role = username;
-                if(role != "Member"){
-                    if(role == "Admin"){
-                        admin = true;
-                    }
-                    employee = true;
-                    page = 3;
-                }
+                page = 3;
             } else {
                 // Login failed
                 login_failed = true;
@@ -330,8 +340,6 @@ void GUI::Home() {
         // Display a message if login failed
         if (login_failed) {
             ImGui::TextColored(ImVec4(1, 0, 0, 1), "Login or Sign Up failed! Please try again.");
-        } else {
-            user = username;
         }
     }
 }
@@ -385,6 +393,19 @@ void GUI::Books() {
 
 void GUI::Events() {
     if(page == 4){
+        // Display month and year selector
+        ImGui::InputInt("Year", &year);
+        ImGui::InputInt("Month", &month);
+
+        // Clamp the month value to be between 1 and 12
+        if (month < 1) {
+            month = 12;
+            year--;
+        }
+        if (month > 12) {
+            month = 1;
+            year++;
+        }
         //All unapproved events
         //By month?
     }
@@ -452,6 +473,60 @@ void GUI::Members() {
 
 void GUI::Event_Create() {
     if(page == 7){
+        std::string date;
+        switch (month) {
+            case 1:
+                date = "January";
+                break;
+            case 2:
+                date = "February";
+                break;
+            case 3:
+                date = "March";
+                break;
+            case 4:
+                date = "April";
+                break;
+            case 5:
+                date = "May";
+                break;
+            case 6:
+                date = "June";
+                break;
+            case 7:
+                date = "July";
+                break;
+            case 8:
+                date = "August";
+                break;
+            case 9:
+                date = "September";
+                break;
+            case 10:
+                date = "October";
+                break;
+            case 11:
+                date = "November";
+                break;
+            case 12:
+                date = "December";
+                break;
+        }
+        std::string suffix;
+        int digit = day % 10;
+        if (digit == 1 && day != 11) {
+            suffix = "st";
+        } else if (digit == 2 && day != 12) {
+            suffix = "nd";
+        } else if (digit == 3 && day != 13) {
+            suffix = "rd";
+        } else {
+            suffix = "th";
+        }
+        date = date + " " + std::to_string(day) + suffix + ", " + std::to_string(year);
+        char *charArray = new char[date.length() + 1];
+        std::strcpy(charArray, date.c_str());
+        ImGui::Text("%s", charArray);
         static char title [128] = "";
         static char desc[1024] = "";
         static int hour;
