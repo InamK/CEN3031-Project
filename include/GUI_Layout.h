@@ -1,5 +1,6 @@
 #include <imgui.h>
 #include <string>
+#include <vector>
 #include <ctime>
 #include "cmath"
 #include <cstring>
@@ -7,6 +8,8 @@
 #include "user_manager.h"
 #include "event_manager.h"
 #include "book_manager.h"
+#include "Book.h"
+#include <iostream>
 //Class contains functionality for UI
 class GUI{
     //bools for permissions
@@ -21,13 +24,13 @@ class GUI{
     unsigned int page = 2; //This is login screen
     std::string user; //Username kept track of.
     //Backend connectors
-//    UserManager users;
-//    BookManager books;
-//    EventManager events;
+    UserManager users;
+    BookManager books;
+    EventManager events;
 
 public:
     //Constructor
-    GUI(); //UserManager& users, EventManager& events, BookManager& books);
+    GUI(UserManager& users, EventManager& events, BookManager& books);
     //primary function
     void RunGUI();
 private:
