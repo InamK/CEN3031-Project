@@ -27,6 +27,7 @@ add_executable(CEN3031-Project
         src/user_manager.cpp
         src/book_manager.cpp
         src/event_manager.cpp
+        src/Book.cpp
 #        src/mysql_test.cpp
 )
 

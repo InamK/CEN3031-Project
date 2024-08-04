@@ -32,6 +32,13 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 // Main code
 int main(int, char**)
 {
+    //This part created by us for database
+    Database db("cen3031", "cen3031_pass", "library_management");
+
+    if (!db.connect()) {
+        //cerr << "Failed to connect to database" << endl;
+        return EXIT_FAILURE;
+    }
     // Create application window
     //ImGui_ImplWin32_EnableDpiAwareness();
     WNDCLASSEXW wc = { sizeof(wc), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(nullptr), nullptr, nullptr, nullptr, nullptr, L"ImGui Example", nullptr };
@@ -102,7 +109,10 @@ int main(int, char**)
     bool show_demo_window = true;
     bool show_another_window = false;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-    GUI Library;
+    UserManager um = UserManager(db);
+    BookManager bm = BookManager(db);
+    EventManager em = EventManager(db);
+    GUI Library = GUI(um, em, bm);
     // Main loop
     bool done = false;
     while (!done)

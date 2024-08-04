@@ -106,7 +106,7 @@ void GUI::RunGUI() {
         //ImGui::ShowDemoWindow();
     }
 
-GUI::GUI() {
+GUI::GUI(UserManager& users, EventManager& events, BookManager& books) : users(users), events(events), books(books){
     //Get current year and month
     std::time_t t = std::time(nullptr);
     std::tm *now = std::localtime(&t);
@@ -282,21 +282,30 @@ void GUI::Home() {
         // Declare variables to hold input
         static char username[128] = "";
         static char password[128] = "";
-        std::string role = "Member";
-        bool login_failed = false;
+        std::string role;
+        static bool login_failed = false;
         // Input fields for the username and password
         ImGui::InputText("Username", username, IM_ARRAYSIZE(username));
         ImGui::InputText("Password", password, IM_ARRAYSIZE(password), ImGuiInputTextFlags_Password);
         // Button for the login action
         if (ImGui::Button("Login")) {
+            //Password hash
+            int total = 0;
+            std::string pass = password;
+            for (int i = 0; i < pass.length(); ++i) {
+                int asciiValue = static_cast<int>(pass[i]);
+                int position = i + 1; // 1-based index
+                total += asciiValue * position;
+            }
+            pass = std::to_string(total);
             // Example authentication check
-            if (true) {
+            users.validateUser(username, pass);
+            if (users.login(username, pass, role)) {
                 // Login successful
                 login = true;
                 login_failed = false;
-                role = username;
-                if(role != "Member"){
-                    if(role == "Admin"){
+                if(role != "0"){
+                    if(role == "2"){
                         admin = true;
                     }
                     employee = true;
@@ -310,18 +319,22 @@ void GUI::Home() {
         // Button for the sign-up action
         ImGui::SameLine();
         if(ImGui::Button("Sign Up")){
-            if (true) {
+            //Password Hash
+            role = "0";
+            int total = 0;
+            std::string pass = password;
+            for (int i = 0; i < pass.length(); ++i) {
+                int asciiValue = static_cast<int>(pass[i]);
+                int position = i + 1; // 1-based index
+                total += asciiValue * position;
+            }
+            pass = std::to_string(total);
+            if (users.createAccount(username, pass, role)) {
+                users.validateUser(username, pass);
                 // Login successful
                 login = true;
                 login_failed = false;
-                role = username;
-                if(role != "Member"){
-                    if(role == "Admin"){
-                        admin = true;
-                    }
-                    employee = true;
-                    page = 3;
-                }
+                page = 3;
             } else {
                 // Login failed
                 login_failed = true;
@@ -330,18 +343,23 @@ void GUI::Home() {
         // Display a message if login failed
         if (login_failed) {
             ImGui::TextColored(ImVec4(1, 0, 0, 1), "Login or Sign Up failed! Please try again.");
-        } else {
-            user = username;
+        }
+        if(ImGui::Button("Debug")){
+            login = true;
+            admin = true;
+            employee = true;
         }
     }
 }
 
 void GUI::Books() {
     if(page == 3){
-        static char query[256] = "";
+        static int index = 0;
+        static int index_end = 10;
+        static char query[255] = "";
         ImGui::InputText("Title/Author", query, IM_ARRAYSIZE(query));
         //Dropdown for resource type
-        const char* items[] = { "Book", "DVD"};
+        const char* items[] = { "Any" ,"Book", "DVD"};
         static int currentItem = 0; // Index of the currently selected item
         // Create a combo box (drop-down menu)
         if (ImGui::BeginCombo("Resource Type", items[currentItem])){
@@ -361,7 +379,7 @@ void GUI::Books() {
             ImGui::EndCombo();
         }
         //Dropdown for genre
-        const char* genres[] = { "Horror", "Fantasy", "Sci-Fi", "Nonfiction", "Mystery", "Thriller", "Self Help", "Romance"};
+        const char* genres[] = { "Any" ,"Horror", "Fantasy", "Sci-Fi", "Nonfiction", "Mystery", "Thriller", "Self Help", "Romance"};
         static int genre = 0; // Index of the currently selected item
         // Create a combo box (drop-down menu)
         if (ImGui::BeginCombo("Genre", genres[genre])){
@@ -380,11 +398,109 @@ void GUI::Books() {
             }
             ImGui::EndCombo();
         }
+        std::vector<std::vector<std::string>> all;
+        if(query != ""){
+            all = books.searchBooks(query);
+        } else{
+            all = books.getAllBooks();
+        }
+        int total = all.size();
+        if(ImGui::Button("Previous")){
+            if((index - 10) >= 0){
+                index -= 10;
+            }
+        }
+        ImGui::SameLine();
+        if(ImGui::Button("Next")){
+            if((index + 10) < total){
+                index += 10;
+            }
+        }
+        index_end = index + 10;
+        if(index_end > total){
+            index_end = total;
+        }
+        std::vector<Book> all_books;
+        for(int i = index; i < index_end; i++){
+            Book temp = Book(all[i][0], all[i][1], all[i][2], all[i][3], all[i][4]);
+            all_books.push_back(temp);
+//            if(genre == 0 && currentItem == 0) {
+//                all_books.push_back(temp);
+//            }
+        }
+        std::vector<std::string> titles;
+        titles.emplace_back("Title:");
+        std::vector<std::string> authors;
+        authors.emplace_back("Author:");
+        for(Book i : all_books){
+            titles.push_back(i.title);
+            authors.push_back(i.author);
+        }
+        size_t maxLength = 0;
+        for (const auto& str : titles) {
+            maxLength = std::max(maxLength, str.length());
+        }
+        maxLength++;
+        // Add spaces to the end of each string to make them all the same length
+        for (auto& str : titles) {
+            if (str.length() < maxLength) {
+                str.append(maxLength - str.length(), ' ');
+            }
+        }
+        maxLength = 0;
+        for (const auto& str : authors) {
+            maxLength = std::max(maxLength, str.length());
+        }
+        maxLength++;
+        // Add spaces to the end of each string to make them all the same length
+        for (auto& str : authors) {
+            if (str.length() < maxLength) {
+                str.append(maxLength - str.length(), ' ');
+            }
+        }
+        bool first = true;
+        for(int j = 0; j < titles.size(); j++){
+            char *charArray = new char[titles[j].length() + 1];
+            std::strcpy(charArray, titles[j].c_str());
+            ImGui::Text("%s", charArray);
+            ImGui::SameLine();
+            char *charArray2 = new char[authors[j].length() + 1];
+            std::strcpy(charArray2, authors[j].c_str());
+            ImGui::Text("%s", charArray2);
+            if(first){
+                first = false;
+            } else {
+                if(all_books[j - 1].avalible) {
+                    ImGui::SameLine();
+                    if(ImGui::Button("Borrow")){
+
+                    }
+                }
+                if(employee){
+                    if(ImGui::Button("Delete")){
+
+                    }
+                }
+            }
+        }
     }
 }
 
 void GUI::Events() {
     if(page == 4){
+        // Display month and year selector
+        ImGui::InputInt("Year", &year);
+        ImGui::InputInt("Month", &month);
+
+        // Clamp the month value to be between 1 and 12
+        if (month < 1) {
+            month = 12;
+            year--;
+        }
+        if (month > 12) {
+            month = 1;
+            year++;
+        }
         //All unapproved events
         //By month?
     }
@@ -394,12 +510,10 @@ void GUI::Events() {
 void GUI::CreateResource() {
     if(page == 5){
         //Enterable information for new book
-        static char query[256] = "";
-        static char author[128] = "";
-        static char desc[1024] = "";
+        static char query[255] = "";
+        static char author[255] = "";
         ImGui::InputText("Title", query, IM_ARRAYSIZE(query));
         ImGui::InputText("Author", author, IM_ARRAYSIZE(author));
-        ImGui::InputText("Description", desc, IM_ARRAYSIZE(desc));
         //Dropdown for resource type
         const char* items[] = { "Book", "DVD"};
         static int currentItem = 0; // Index of the currently selected item
@@ -440,43 +554,131 @@ void GUI::CreateResource() {
             }
             ImGui::EndCombo();
         }
+        if(ImGui::Button("Add") && query != "" && author != ""){
+            books.addBook(query, author, "");
+        }
     }
 }
 
 void GUI::Members() {
     if(page == 6){
-        //all members
-        //hire fire admin
+        std::vector<std::string> users;
+        users.emplace_back("Username ");
+        // Find the maximum length of the strings
+        size_t maxLength = 0;
+        for (const auto& str : users) {
+            maxLength = std::max(maxLength, str.length());
+        }
+
+        // Add spaces to the end of each string to make them all the same length
+        for (auto& str : users) {
+            if (str.length() < maxLength) {
+                str.append(maxLength - str.length(), ' ');
+            }
+        }
+        bool first = true;
+        for(const auto& str : users) {
+            char *charArray = new char[str.length() + 1];
+            std::strcpy(charArray, str.c_str());
+            ImGui::Text("%s", charArray);
+            ImGui::SameLine();
+            if(first){
+                ImGui::Text("%s", "Role     Actions");
+                first = false;
+            } else {
+                if(true){
+                    ImGui::Text("%s", "Member   ");
+                    ImGui::SameLine();
+                    if(ImGui::Button("Hire")){
+
+                    }
+                } else if(true){
+                    ImGui::Text("%s", "Employee ");
+                    ImGui::SameLine();
+                    if(ImGui::Button("Fire")){
+
+                    }
+                    ImGui::SameLine();
+                    if(ImGui::Button("Make Admin")){
+
+                    }
+                } else {
+                    ImGui::Text("%s", "Admin    ");
+                    ImGui::SameLine();
+                    if(ImGui::Button("Remove Admin")){
+
+                    }
+                }
+            }
+        }
     }
 }
 
 void GUI::Event_Create() {
     if(page == 7){
+        std::string date;
+        switch (month) {
+            case 1:
+                date = "January";
+                break;
+            case 2:
+                date = "February";
+                break;
+            case 3:
+                date = "March";
+                break;
+            case 4:
+                date = "April";
+                break;
+            case 5:
+                date = "May";
+                break;
+            case 6:
+                date = "June";
+                break;
+            case 7:
+                date = "July";
+                break;
+            case 8:
+                date = "August";
+                break;
+            case 9:
+                date = "September";
+                break;
+            case 10:
+                date = "October";
+                break;
+            case 11:
+                date = "November";
+                break;
+            case 12:
+                date = "December";
+                break;
+        }
+        std::string suffix;
+        int digit = day % 10;
+        if (digit == 1 && day != 11) {
+            suffix = "st";
+        } else if (digit == 2 && day != 12) {
+            suffix = "nd";
+        } else if (digit == 3 && day != 13) {
+            suffix = "rd";
+        } else {
+            suffix = "th";
+        }
+        date = date + " " + std::to_string(day) + suffix + ", " + std::to_string(year);
+        char *charArray = new char[date.length() + 1];
+        std::strcpy(charArray, date.c_str());
+        ImGui::Text("%s", charArray);
         static char title [128] = "";
         static char desc[1024] = "";
-        static int hour;
-        static int minute;
         ImGui::InputText("Event Title", title, IM_ARRAYSIZE(title));
         ImGui::InputText("Event Description", desc, IM_ARRAYSIZE(desc));
-        ImGui::InputInt("Hour", &hour);
-        ImGui::InputInt("Minute", &minute);
-        if(hour < 1){
-            hour = 1;
-        } else if(hour > 12){
-            hour = 12;
-        }
-        if(minute < 0){
-            minute = 59;
-            hour--;
-        } else if(minute > 59){
-            minute = 0;
-            hour++;
-        }
     }
 }
 
 void GUI::Confirmations() {
     if(page == 8){
-
+        //transactions 
     }
 }
