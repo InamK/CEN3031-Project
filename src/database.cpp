@@ -18,7 +18,7 @@ Database::~Database() {
 }
 
 bool Database::connect() {
-    if (!mysql_real_connect(conn, "localhost", user.c_str(), password.c_str(), database.c_str(), 0, NULL, 0)) {
+    if (!mysql_real_connect(conn, "gz-cynosdbmysql-grp-59hnehbp.sql.tencentcdb.com", user.c_str(), password.c_str(), database.c_str(), 25121, NULL, 0)) {
         std::cerr << "MySQL connection error: " << mysql_error(conn) << std::endl;
         return false;
     }

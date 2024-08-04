@@ -14,7 +14,7 @@ using namespace std;
 
 int main(void){
 
-    Database db("root", "cen3031", "library_management");
+    Database db("cen3031", "cen3031_pass", "library_management");
 
     if (!db.connect()) {
         cerr << "Failed to connect to database" << endl;
