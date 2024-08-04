@@ -7,11 +7,16 @@
 
 ## 2. DATABASE design
 
-You can use docker to run mysql, or install mysql:5.7 in windows.
-```
-docker pull mysql:5.7
-docker run --name mysql-container -e MYSQL_ROOT_PASSWORD=cen3031 -p 3306:3306 -d mysql:5.7 --skip_ssl
-```
+Now we update the mysql using tencent cloud service.
+
+MySQL
+>IP: gz-cynosdbmysql-grp-59hnehbp.sql.tencentcdb.com  
+User: cen3031  
+Password: cen3031_pass  
+Port: 25121  
+Database: library_management  
+version: 5.7  
+SSL: NO SSL  
 
 
 ### Tables
