@@ -21,14 +21,13 @@ class GUI{
     unsigned int page = 2; //This is login screen
     std::string user; //Username kept track of.
     //Backend connectors
-    Database db;
-    UserManager users;
-    BookManager books;
-    EventManager events;
+//    UserManager users;
+//    BookManager books;
+//    EventManager events;
 
 public:
     //Constructor
-    GUI(Database& db, UserManager& users, EventManager& events, BookManager& books);
+    GUI(); //UserManager& users, EventManager& events, BookManager& books);
     //primary function
     void RunGUI();
 private:

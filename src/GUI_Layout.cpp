@@ -106,7 +106,7 @@ void GUI::RunGUI() {
         //ImGui::ShowDemoWindow();
     }
 
-GUI::GUI(Database& db, UserManager& users, EventManager& events, BookManager& books) : db(db), users(users), events(events), books(books){
+GUI::GUI(){//UserManager& users, EventManager& events, BookManager& books) : users(users), events(events), books(books){
     //Get current year and month
     std::time_t t = std::time(nullptr);
     std::tm *now = std::localtime(&t);
@@ -299,10 +299,11 @@ void GUI::Home() {
             }
             pass = std::to_string(total);
             // Example authentication check
-            if (users.login(username, pass, role)) {
+            if (true){//{users.login(username, pass, role)) {
                 // Login successful
                 login = true;
                 login_failed = false;
+                role = username;
                 if(role != "Member"){
                     if(role == "Admin"){
                         admin = true;
@@ -327,7 +328,7 @@ void GUI::Home() {
                 total += asciiValue * position;
             }
             pass = std::to_string(total);
-            if (users.createAccount(username, pass, role)) {
+            if (true){//users.createAccount(username, pass, role)) {
                 // Login successful
                 login = true;
                 login_failed = false;
@@ -349,7 +350,7 @@ void GUI::Books() {
         static char query[256] = "";
         ImGui::InputText("Title/Author", query, IM_ARRAYSIZE(query));
         //Dropdown for resource type
-        const char* items[] = { "Book", "DVD"};
+        const char* items[] = { "Any" ,"Book", "DVD"};
         static int currentItem = 0; // Index of the currently selected item
         // Create a combo box (drop-down menu)
         if (ImGui::BeginCombo("Resource Type", items[currentItem])){
@@ -369,7 +370,7 @@ void GUI::Books() {
             ImGui::EndCombo();
         }
         //Dropdown for genre
-        const char* genres[] = { "Horror", "Fantasy", "Sci-Fi", "Nonfiction", "Mystery", "Thriller", "Self Help", "Romance"};
+        const char* genres[] = { "Any" ,"Horror", "Fantasy", "Sci-Fi", "Nonfiction", "Mystery", "Thriller", "Self Help", "Romance"};
         static int genre = 0; // Index of the currently selected item
         // Create a combo box (drop-down menu)
         if (ImGui::BeginCombo("Genre", genres[genre])){
@@ -417,10 +418,8 @@ void GUI::CreateResource() {
         //Enterable information for new book
         static char query[256] = "";
         static char author[128] = "";
-        static char desc[1024] = "";
         ImGui::InputText("Title", query, IM_ARRAYSIZE(query));
         ImGui::InputText("Author", author, IM_ARRAYSIZE(author));
-        ImGui::InputText("Description", desc, IM_ARRAYSIZE(desc));
         //Dropdown for resource type
         const char* items[] = { "Book", "DVD"};
         static int currentItem = 0; // Index of the currently selected item
@@ -466,8 +465,55 @@ void GUI::CreateResource() {
 
 void GUI::Members() {
     if(page == 6){
-        //all members
-        //hire fire admin
+        std::vector<std::string> users;
+        users.emplace_back("Username ");
+        // Find the maximum length of the strings
+        size_t maxLength = 0;
+        for (const auto& str : users) {
+            maxLength = std::max(maxLength, str.length());
+        }
+
+        // Add spaces to the end of each string to make them all the same length
+        for (auto& str : users) {
+            if (str.length() < maxLength) {
+                str.append(maxLength - str.length(), ' ');
+            }
+        }
+        bool first = true;
+        for(const auto& str : users) {
+            char *charArray = new char[str.length() + 1];
+            std::strcpy(charArray, str.c_str());
+            ImGui::Text("%s", charArray);
+            ImGui::SameLine();
+            if(first){
+                ImGui::Text("%s", "Role     Actions");
+                first = false;
+            } else {
+                if(true){
+                    ImGui::Text("%s", "Member   ");
+                    ImGui::SameLine();
+                    if(ImGui::Button("Hire")){
+
+                    }
+                } else if(true){
+                    ImGui::Text("%s", "Employee ");
+                    ImGui::SameLine();
+                    if(ImGui::Button("Fire")){
+
+                    }
+                    ImGui::SameLine();
+                    if(ImGui::Button("Make Admin")){
+
+                    }
+                } else {
+                    ImGui::Text("%s", "Admin    ");
+                    ImGui::SameLine();
+                    if(ImGui::Button("Remove Admin")){
+
+                    }
+                }
+            }
+        }
     }
 }
 
