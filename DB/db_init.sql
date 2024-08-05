@@ -2,6 +2,7 @@ DROP DATABASE IF EXISTS library_management;
 CREATE DATABASE library_management;
 USE library_management;
 
+-- DROP TABLE IF EXISTS users;
 CREATE TABLE users (
                        id INT AUTO_INCREMENT PRIMARY KEY,
                        username VARCHAR(50) NOT NULL UNIQUE,
@@ -10,6 +11,7 @@ CREATE TABLE users (
                        approved BOOLEAN DEFAULT FALSE
 );
 
+-- DROP TABLE IF EXISTS books;
 CREATE TABLE books (
                        id INT AUTO_INCREMENT PRIMARY KEY,
                        title VARCHAR(255) NOT NULL,
@@ -18,6 +20,7 @@ CREATE TABLE books (
                        available BOOLEAN DEFAULT TRUE
 );
 
+-- DROP TABLE IF EXISTS transactions;
 CREATE TABLE transactions (
                               id INT AUTO_INCREMENT PRIMARY KEY,
                               user_id INT NOT NULL,
@@ -29,15 +32,17 @@ CREATE TABLE transactions (
                               FOREIGN KEY (book_id) REFERENCES books(id)
 );
 
+-- DROP TABLE IF EXISTS events;
 CREATE TABLE events (
                         id INT AUTO_INCREMENT PRIMARY KEY,
                         title VARCHAR(255) NOT NULL,
                         description TEXT,
                         event_date DATE NOT NULL,
+                        create_date DATE NOT NULL,
+                        approved BOOLEAN DEFAULT FALSE,
                         created_by INT NOT NULL,
                         FOREIGN KEY (created_by) REFERENCES users(id)
 );
-
 
 -- Add test data
 INSERT INTO users (username, password, role, approved) VALUES ('johndoe', 'password123', 'user', TRUE);
@@ -62,8 +67,8 @@ INSERT INTO transactions (user_id, book_id, checkout_date, return_date, status) 
 INSERT INTO transactions (user_id, book_id, checkout_date, return_date, status) VALUES (4, 5, '2024-04-01', '2024-04-08', 'returned');
 
 -- events
-INSERT INTO events (title, description, event_date, created_by) VALUES ('Book Club Meeting', 'Discussing the book of the month: 1984 by George Orwell.', '2024-04-15', 2);
-INSERT INTO events (title, description, event_date, created_by) VALUES ('Author Visit: Harper Lee', 'Join us for a special visit and Q&A session with Harper Lee.', '2024-05-10', 3);
-INSERT INTO events (title, description, event_date, created_by) VALUES ('Summer Reading Kickoff', 'Kick off the summer reading program with activities and prizes.', '2024-06-01', 1);
-INSERT INTO events (title, description, event_date, created_by) VALUES ('Children\'s Storytime', 'A fun storytime event for kids aged 3-7.', '2024-06-20', 4);
+INSERT INTO events (title, description, event_date, create_date, approved, created_by) VALUES ('Book Club Meeting', 'Discussing the book of the month: 1984 by George Orwell.', '2024-04-15', '2024-03-01', TRUE, 2);
+INSERT INTO events (title, description, event_date, create_date, approved, created_by) VALUES ('Author Visit: Harper Lee', 'Join us for a special visit and Q&A session with Harper Lee.', '2024-05-10', '2024-03-15', FALSE, 3);
+INSERT INTO events (title, description, event_date, create_date, approved, created_by) VALUES ('Summer Reading Kickoff', 'Kick off the summer reading program with activities and prizes.', '2024-06-01', '2024-04-20', TRUE, 1);
+INSERT INTO events (title, description, event_date, create_date, approved, created_by) VALUES ('Children Storytime', 'A fun storytime event for kids aged 3-7.', '2024-06-20', CURRENT_DATE, FALSE, 4);
 

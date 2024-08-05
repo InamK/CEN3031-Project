@@ -59,3 +59,41 @@ std::string UserManager::getUserRole(const std::string& username) {
     return role;
 }
 
+bool UserManager::changeUserRole(const std::string& username, const std::string& newRole) {
+    std::string query = "UPDATE users SET role='" + newRole + "' WHERE username='" + username + "';";
+    return db.executeQuery(query);
+}
+
+std::vector<std::pair<int, std::string>> UserManager::getAllUsers() {
+    std::string query = "SELECT id, username FROM users;";
+    MYSQL_RES* res = db.fetchQuery(query);
+    std::vector<std::pair<int, std::string>> users;
+
+    if (res) {
+        MYSQL_ROW row;
+        while ((row = mysql_fetch_row(res))) {
+            users.push_back(std::make_pair(std::stoi(row[0]), row[1]));
+        }
+        mysql_free_result(res);
+    } else {
+        std::cerr << "Failed to query users table" << std::endl;
+    }
+    return users;
+}
+
+int UserManager::getUserId(const std::string& username) {
+    std::string query = "SELECT id FROM users WHERE username='" + username + "';";
+    MYSQL_RES* res = db.fetchQuery(query);
+    int userId = -1;
+
+    if (res) {
+        MYSQL_ROW row = mysql_fetch_row(res);
+        if (row) {
+            userId = std::stoi(row[0]);
+        }
+        mysql_free_result(res);
+    } else {
+        std::cerr << "Failed to retrieve user ID or no results found." << std::endl;
+    }
+    return userId;
+}
