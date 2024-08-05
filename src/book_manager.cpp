@@ -46,11 +46,6 @@ std::vector<std::vector<std::string>> BookManager::searchBooks(const std::string
     return books;
 }
 
-
-
-
-
-
 std::vector<std::vector<std::string>> BookManager::getAllBooks() {
     std::vector<std::vector<std::string>> books;
     MYSQL_RES* res = db.fetchQuery("SELECT * FROM books");
@@ -66,6 +61,32 @@ std::vector<std::vector<std::string>> BookManager::getAllBooks() {
         mysql_free_result(res);
     } else {
         std::cerr << "Failed to query books table" << std::endl;
+    }
+    return books;
+}
+
+std::vector<std::vector<std::string>> BookManager::getCheckedOutBooksByUser(int userId) {
+    std::vector<std::vector<std::string>> books;
+
+    // Query to join transactions with books to get book details
+    std::string query = "SELECT books.id, books.title, books.author, books.isbn "
+                        "FROM transactions "
+                        "JOIN books ON transactions.book_id = books.id "
+                        "WHERE transactions.user_id = " + std::to_string(userId) + " AND transactions.status = 'checked_out'";
+
+    MYSQL_RES* res = db.fetchQuery(query);
+    if (res) {
+        MYSQL_ROW row;
+        while ((row = mysql_fetch_row(res)) != NULL) {
+            std::vector<std::string> book;
+            for (int i = 0; i < mysql_num_fields(res); ++i) {
+                book.push_back(row[i] ? row[i] : "NULL");
+            }
+            books.push_back(book);
+        }
+        mysql_free_result(res);
+    } else {
+        std::cerr << "Failed to query transactions and books tables" << std::endl;
     }
     return books;
 }

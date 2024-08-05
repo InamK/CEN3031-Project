@@ -6,6 +6,7 @@
 
 #include "database.h"
 #include <string>
+#include <vector>
 
 class UserManager {
 public:
@@ -17,6 +18,10 @@ public:
 
     std::string getUserRole(const std::string& username);
 
+    bool changeUserRole(const std::string& username, const std::string& newRole);
+    std::vector<std::pair<int, std::string>> getAllUsers();
+    int getUserId(const std::string& username);
+    bool approveUser(const std::string& username);
 private:
     Database& db;
 };

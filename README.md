@@ -62,6 +62,8 @@ SSL: NO SSL
 | title       | VARCHAR(255) | NO   |      | NULL    |                |
 | description | TEXT         | YES  |      | NULL    |                |
 | event_date  | DATE         | NO   |      | NULL    |                |
+| create_date | DATE         | NO   |      | NULL    |                |
+| approved    | BOOLEAN      | YES  |      | FALSE   |                |
 | created_by  | INT          | NO   | MUL  | NULL    |                |
 | FOREIGN KEY | created_by REFERENCES users(id) | | | |                |
 
@@ -77,6 +79,14 @@ SSL: NO SSL
 
 - **getUserRole(username)**: Retrieves the role of the user based on the provided username.
 
+- **changeUserRole(const std::string& username, const std::string& newRole)**: Changes the role of an existing user.
+
+- **getAllUsers()**: Returns a list of all users as a vector of pairs containing user IDs and usernames.
+
+- **getUserId(const std::string& username)**: Retrieves the user ID based on the provided username.
+
+- **approveUser(const std::string& username)**: Approves a user, allowing them to log in.
+
 ### `BookManager` Class
 
 - **getAllBooks()**: Returns a list of all books in the library as a vector of vectors of strings. Each inner vector represents a book with its attributes like ID, title, author, ISBN, and availability.
@@ -91,18 +101,23 @@ SSL: NO SSL
 
 - **searchBooks(keyword)**: Searches for books in the library based on a keyword, returning a list of matching books.
 
+- **getCheckedOutBooksByUser(int userId)**: Returns a list of books currently checked out by the specified user.
+
 ### `EventManager` Class
 
 - **getAllEvents()**: Returns a list of all events in the library's event calendar as a vector of vectors of strings. This method is intended for use by admin and employee users.
 
 - **getEventsByUser(int userId)**: Returns a list of events created by a specific user (typically a regular user) as a vector of vectors of strings. This method is intended for users to view their own events.
 
-- **addEvent(title, description, createdBy)**: Adds a new event to the library's event calendar.
+- **addEvent(title, description, eventDate, createdBy)**: Adds a new event to the library's event calendar.
 
-- **editEvent(eventId, title, description)**: Edits an existing event's details.
+- **approveEvent(int eventId)**: Approves an event, changing its status to approved.
+
+- **getEventsForMonth(int year, int month)**: Returns a list of events scheduled for the specified month and year. Outputs a vector of strings with event details including ID, title, date, description, and approval status.
+
+- **editEvent(eventId, title, description, eventDate)**: Edits an existing event's details.
 
 - **deleteEvent(eventId)**: Deletes an event from the calendar.
-
 
 
 ## Some commands

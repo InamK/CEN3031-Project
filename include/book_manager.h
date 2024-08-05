@@ -19,6 +19,7 @@ public:
     bool returnBook(int transactionId);
     std::vector<std::vector<std::string>> searchBooks(const std::string& keyword);
     std::vector<std::vector<std::string>> getAllBooks();
+    std::vector<std::vector<std::string>> getCheckedOutBooksByUser(int userId);
 
 private:
     Database& db;
