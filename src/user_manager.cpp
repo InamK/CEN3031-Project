@@ -97,3 +97,8 @@ int UserManager::getUserId(const std::string& username) {
     }
     return userId;
 }
+
+void UserManager::approveUser(const std::string& username) {
+    std::string query = "UPDATE users SET approved = 1 WHERE username = '" + username + "';";
+    db.executeQuery(query);
+}
