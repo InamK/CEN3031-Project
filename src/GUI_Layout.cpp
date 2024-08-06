@@ -649,8 +649,16 @@ void GUI::CreateResource() {
 //            }
 //            ImGui::EndCombo();
 //        }
+        int total = 0;
+        std::string pass = query;
+        for (int i = 0; i < pass.length(); ++i) {
+            int asciiValue = static_cast<int>(static_cast<unsigned char>(pass[i]));
+            int position = i + 1; // 1-based index
+            total += asciiValue * position;
+        }
+        pass = std::to_string(total);
         if(ImGui::Button("Add") && query != "" && author != ""){
-            books.addBook(query, author, "");
+            books.addBook(query, author, pass);
         }
     }
 }
