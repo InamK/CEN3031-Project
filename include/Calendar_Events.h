@@ -1,11 +1,13 @@
 #include <string>
 #include <vector>
+#include <iostream>
 
 class Event{
+public:
+    int id;
     std::string name;
     std::string description;
-    int hour, minute, day, month;
-    bool approved = false;
-    std::vector<std::string> RSVP_List;
-    Event(std::string name, std::string description, int hour, int minute, int month, int day);
+    int day, month, year;
+    bool approved;
+    Event(std::string id, std::string name, std::string description, std::string date, std::string state);
 };

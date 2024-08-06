@@ -19,11 +19,15 @@ bool BookManager::removeBook(int bookId) {
 }
 
 bool BookManager::checkoutBook(int userId, int bookId) {
+    std::string query0 = "UPDATE books SET available = 0 WHERE id = '" + std::to_string(bookId) + "';";
+    db.executeQuery(query0);
     std::string query = "INSERT INTO transactions (user_id, book_id, checkout_date) VALUES (" + std::to_string(userId) + ", " + std::to_string(bookId) + ", CURDATE());";
     return db.executeQuery(query);
 }
 
-bool BookManager::returnBook(int transactionId) {
+bool BookManager::returnBook(int transactionId, int bookId) {
+    std::string query0 = "UPDATE books SET available = 1 WHERE id = '" + std::to_string(bookId) + "';";
+    db.executeQuery(query0);
     std::string query = "UPDATE transactions SET return_date=CURDATE(), status='returned' WHERE id=" + std::to_string(transactionId) + ";";
     return db.executeQuery(query);
 }
@@ -69,7 +73,7 @@ std::vector<std::vector<std::string>> BookManager::getCheckedOutBooksByUser(int 
     std::vector<std::vector<std::string>> books;
 
     // Query to join transactions with books to get book details
-    std::string query = "SELECT books.id, books.title, books.author, books.isbn "
+    std::string query = "SELECT transactions.id, books.id, books.title, books.author, books.isbn "
                         "FROM transactions "
                         "JOIN books ON transactions.book_id = books.id "
                         "WHERE transactions.user_id = " + std::to_string(userId) + " AND transactions.status = 'checked_out'";

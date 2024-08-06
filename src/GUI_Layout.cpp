@@ -79,14 +79,16 @@ void GUI::RunGUI() {
                 page = 2;
             }
         }
-        if(ImGui::Button("Resources")){
+        if(ImGui::Button("Library Resources")){
             page = 3;
         }
         if(employee || admin){
             if(ImGui::Button("Add Resource")){
                 page = 5;
             }
-            if(ImGui::Button("Checkout/Return Confirmations")){
+        }
+        if(login) {
+            if (ImGui::Button("My Checkouts")) {
                 page = 8;
             }
         }
@@ -197,6 +199,18 @@ void GUI::calendar() {
         ImGui::Dummy(cellSize); // Empty cell for days before the start of the month
         if (i < daysInWeek - 1) ImGui::SameLine();
     }
+    // Check for events
+    std::vector<std::vector<std::string>> evnts = events.getEventsForMonth(year, month);
+    std::unordered_map<int, bool> event_days;
+    for(int i = 1; i <= daysInMonth; i++){
+        event_days[i] = false;
+    }
+    for(std::vector<std::string> evnt : evnts){
+        Event temp = Event(evnt[0], evnt[1], evnt[3], evnt[2], evnt[4]);
+        if(temp.approved) {
+            event_days[temp.day] = true;
+        }
+    }
 
     for (int i = 1; i <= daysInMonth; ++i) {
         if ((i + startDay - 1) % daysInWeek != 0) {
@@ -204,11 +218,19 @@ void GUI::calendar() {
         } else if (i > 1) {
             ImGui::NewLine();
         }
-        if(ImGui::Button(std::to_string(i).c_str(), cellSize)){
+        std::string numStr = std::to_string(i);
+        if(event_days[i]){
+            numStr += "*";
+        }
+        char *charArray = new char[numStr.length() + 1];
+        std::strcpy(charArray, numStr.c_str());
+        if(ImGui::Button(charArray, cellSize)){
             day = i;
             page = 1;
         }
+        delete[] charArray;
     }
+    ImGui::Text("\n \n * Event on this day!");
 }
 
 void GUI::Date() {
@@ -267,8 +289,42 @@ void GUI::Date() {
         char *charArray = new char[date.length() + 1];
         std::strcpy(charArray, date.c_str());
         ImGui::Text("%s", charArray);
-        ImGui::Button("RSVP");
+        //ImGui::Button("RSVP");
         delete[] charArray;
+        std::vector<std::vector<std::string>> evnts = events.getEventsForMonth(year, month);
+//        std::unordered_map<int, bool> event_days;
+//        for(int i = 1; i <= 31; i++){
+//            event_days[i] = false;
+//        }
+        std::vector<Event> month_events;
+        for(std::vector<std::string> evnt : evnts){
+            Event temp = Event(evnt[0], evnt[1], evnt[3], evnt[2], evnt[4]);
+            month_events.push_back(temp);
+        }
+        ImGui::Text("Today's Events");
+        bool today = false;
+        for(const Event& i : month_events){
+            if(i.day == day && i.approved){
+                today = true;
+                charArray = new char[i.name.length() + 1];
+                std::strcpy(charArray, i.name.c_str());
+                ImGui::Text("%s", charArray);
+                delete[] charArray;
+                charArray = new char[i.description.length() + 1];
+                std::strcpy(charArray, i.description.c_str());
+                ImGui::Text("%s", charArray);
+                delete[] charArray;
+                if(admin) {
+                    if (ImGui::Button("Delete")) {
+                        events.deleteEvent(i.id);
+                    }
+                }
+                ImGui::Text("\n");
+            }
+        }
+        if(!today){
+            ImGui::Text("No Events");
+        }
         if (employee) {
             if (ImGui::Button("Add Event")) {
                 page = 7;
@@ -293,23 +349,23 @@ void GUI::Home() {
             int total = 0;
             std::string pass = password;
             for (int i = 0; i < pass.length(); ++i) {
-                int asciiValue = static_cast<int>(pass[i]);
+                int asciiValue = static_cast<int>(static_cast<unsigned char>(pass[i]));
                 int position = i + 1; // 1-based index
                 total += asciiValue * position;
             }
             pass = std::to_string(total);
             // Example authentication check
-            users.validateUser(username, pass);
             if (users.login(username, pass, role)) {
                 // Login successful
                 login = true;
                 login_failed = false;
-                if(role != "0"){
-                    if(role == "2"){
+                if(role != "user"){
+                    if(role == "admin"){
                         admin = true;
                     }
                     employee = true;
                 }
+                id = username;
                 page = 3;
             } else {
                 // Login failed
@@ -320,20 +376,21 @@ void GUI::Home() {
         ImGui::SameLine();
         if(ImGui::Button("Sign Up")){
             //Password Hash
-            role = "0";
+            role = "user";
             int total = 0;
             std::string pass = password;
             for (int i = 0; i < pass.length(); ++i) {
-                int asciiValue = static_cast<int>(pass[i]);
+                int asciiValue = static_cast<int>(static_cast<unsigned char>(pass[i]));
                 int position = i + 1; // 1-based index
                 total += asciiValue * position;
             }
             pass = std::to_string(total);
             if (users.createAccount(username, pass, role)) {
-                users.validateUser(username, pass);
+                users.approveUser(username);
                 // Login successful
                 login = true;
                 login_failed = false;
+                id = username;
                 page = 3;
             } else {
                 // Login failed
@@ -344,11 +401,11 @@ void GUI::Home() {
         if (login_failed) {
             ImGui::TextColored(ImVec4(1, 0, 0, 1), "Login or Sign Up failed! Please try again.");
         }
-        if(ImGui::Button("Debug")){
-            login = true;
-            admin = true;
-            employee = true;
-        }
+//        if(ImGui::Button("Debug")){
+//            login = true;
+//            admin = true;
+//            employee = true;
+//        }
     }
 }
 
@@ -404,7 +461,7 @@ void GUI::Books() {
         } else{
             all = books.getAllBooks();
         }
-        int total = all.size();
+        int total = int(all.size());
         if(ImGui::Button("Previous")){
             if((index - 10) >= 0){
                 index -= 10;
@@ -470,18 +527,22 @@ void GUI::Books() {
             if(first){
                 first = false;
             } else {
-                if(all_books[j - 1].avalible) {
+                if(all_books[j - 1].avalible && login) {
                     ImGui::SameLine();
-                    if(ImGui::Button("Borrow")){
-
+                    std::string name = "Borrow " + titles[j];
+                    if(ImGui::Button(name.c_str())){
+                        books.checkoutBook(users.getUserId(id), all_books[j - 1].id);
                     }
                 }
                 if(employee){
-                    if(ImGui::Button("Delete")){
-
+                    std::string name = "Delete " + titles[j];
+                    if(ImGui::Button(name.c_str())){
+                        books.removeBook(all_books[j - 1].id);
                     }
                 }
             }
+            delete[] charArray;
+            delete[] charArray2;
         }
     }
 }
@@ -500,6 +561,40 @@ void GUI::Events() {
         if (month > 12) {
             month = 1;
             year++;
+        }
+        std::vector<std::vector<std::string>> evnts = events.getEventsForMonth(year, month);
+        std::vector<Event> all_events;
+        for(std::vector<std::string> evnt : evnts){
+            Event temp = Event(evnt[0], evnt[1], evnt[3], evnt[2], evnt[4]);
+            all_events.push_back(temp);
+        }
+        ImGui::Text("All unapproved events for this month:");
+        for(Event i : all_events){
+            if(!i.approved){
+                std::string date_ex = std::to_string(i.month) + "-" + std::to_string(i.day) + "-" + std::to_string(i.year) + " --- ";
+                char *charArray = new char[date_ex.length() + 1];
+                std::strcpy(charArray, date_ex.c_str());
+                ImGui::Text("%s", charArray);
+                delete[] charArray;
+                ImGui::SameLine();
+                ImGui::Text("Title: ");
+                ImGui::SameLine();
+                charArray = new char[i.name.length() + 1];
+                std::strcpy(charArray, i.name.c_str());
+                ImGui::Text("%s", charArray);
+                delete[] charArray;
+                charArray = new char[i.description.length() + 1];
+                std::strcpy(charArray, i.description.c_str());
+                ImGui::Text("%s", charArray);
+                delete[] charArray;
+                if(ImGui::Button("Approve")){
+                    events.approveEvent(i.id);
+                }
+                ImGui::SameLine();
+                if(ImGui::Button("Delete")){
+                    events.deleteEvent(i.id);
+                }
+            }
         }
         //All unapproved events
         //By month?
@@ -562,54 +657,86 @@ void GUI::CreateResource() {
 
 void GUI::Members() {
     if(page == 6){
-        std::vector<std::string> users;
-        users.emplace_back("Username ");
+        static int index = 1;
+        static int index_end = 10;
+        std::vector<std::pair<int, std::string>> all = users.getAllUsers();
+        int total = all.size();
+        if(ImGui::Button("Previous")){
+            if((index - 10) >= 0){
+                index -= 10;
+            }
+        }
+        ImGui::SameLine();
+        if(ImGui::Button("Next")){
+            if((index + 10) < total){
+                index += 10;
+            }
+        }
+        index_end = index + 10;
+        if(index_end > total){
+            index_end = total;
+        }
+        std::vector<std::string> users_list;
+        users_list.emplace_back("Username: ");
+        for(const std::pair<int, std::string>& i : all){
+            users_list.push_back(i.second);
+        }
         // Find the maximum length of the strings
         size_t maxLength = 0;
-        for (const auto& str : users) {
+        for (const auto& str : users_list) {
             maxLength = std::max(maxLength, str.length());
         }
 
         // Add spaces to the end of each string to make them all the same length
-        for (auto& str : users) {
+        for (auto& str : users_list) {
             if (str.length() < maxLength) {
                 str.append(maxLength - str.length(), ' ');
             }
         }
-        bool first = true;
-        for(const auto& str : users) {
-            char *charArray = new char[str.length() + 1];
-            std::strcpy(charArray, str.c_str());
+        char *charArray0 = new char[users_list[0].length() + 1];
+        std::strcpy(charArray0, users_list[0].c_str());
+        ImGui::Text("%s", charArray0);
+        ImGui::SameLine();
+        ImGui::Text("%s", "Role:       Actions");
+        delete[] charArray0;
+        for(int i = index; i <= index_end; i++) {
+            char *charArray = new char[users_list[i].length() + 1];
+            std::strcpy(charArray, users_list[i].c_str());
             ImGui::Text("%s", charArray);
             ImGui::SameLine();
-            if(first){
-                ImGui::Text("%s", "Role     Actions");
-                first = false;
-            } else {
-                if(true){
-                    ImGui::Text("%s", "Member   ");
-                    ImGui::SameLine();
-                    if(ImGui::Button("Hire")){
+            if(users.getUserRole(all[i - 1].second) == "user"){
+                ImGui::Text("%s", "Member   ");
+                ImGui::SameLine();
+                std::string hire = "Hire " + all[i - 1].second;
+                char *charArrayxx = new char[hire.length() + 1];
+                std::strcpy(charArrayxx, hire.c_str());
+                if(ImGui::Button(charArrayxx)){
+                    users.changeUserRole(all[i - 1].second, "employee");
+                }
+                delete[] charArrayxx;
+            } else if(users.getUserRole(all[i - 1].second) == "employee"){
+                ImGui::Text("%s", "Employee ");
+                ImGui::SameLine();
+                std::string hire = "Fire " + all[i - 1].second;
+                if(ImGui::Button(hire.c_str())){
+                    users.changeUserRole(all[i - 1].second, "user");
+                }
+                ImGui::SameLine();
+                std::string admril = "Make " + all[i - 1].second + " Admin";
 
-                    }
-                } else if(true){
-                    ImGui::Text("%s", "Employee ");
-                    ImGui::SameLine();
-                    if(ImGui::Button("Fire")){
+                if(ImGui::Button(admril.c_str())){
+                    users.changeUserRole(all[i - 1].second, "admin");
+                }
 
-                    }
-                    ImGui::SameLine();
-                    if(ImGui::Button("Make Admin")){
-
-                    }
-                } else {
-                    ImGui::Text("%s", "Admin    ");
-                    ImGui::SameLine();
-                    if(ImGui::Button("Remove Admin")){
-
-                    }
+            } else if(users.getUserRole(all[i - 1].second) == "admin"){
+                ImGui::Text("%s", "Admin    ");
+                ImGui::SameLine();
+                std::string hire = "Remove " + all[i - 1].second + " as Admin";
+                if(ImGui::Button(hire.c_str())){
+                    users.changeUserRole(all[i - 1].second, "employee");
                 }
             }
+            delete[] charArray;
         }
     }
 }
@@ -674,11 +801,35 @@ void GUI::Event_Create() {
         static char desc[1024] = "";
         ImGui::InputText("Event Title", title, IM_ARRAYSIZE(title));
         ImGui::InputText("Event Description", desc, IM_ARRAYSIZE(desc));
+        if(ImGui::Button("Create")){
+            std::string dateStr = std::to_string(year) + "-" + std::to_string(month) +  "-" + std::to_string(day);
+            if(id != "debug_user") {
+                events.addEvent(title, desc, dateStr, users.getUserId(id));
+            } else {
+                events.addEvent(title, desc, dateStr, 1);
+            }
+        }
+        delete[] charArray;
     }
 }
 
 void GUI::Confirmations() {
     if(page == 8){
-        //transactions
+        ImGui::Text("Your Checked-out books:");
+        std::vector<std::vector<std::string>> all = books.getCheckedOutBooksByUser(users.getUserId(id));
+        std::vector<Checkout> all_checks;
+        for(std::vector<std::string> et : all){
+            Checkout temp = Checkout(et[0],et[1],et[2], et[3]);
+            all_checks.push_back(temp);
+        }
+        for(Checkout i : all_checks){
+            std::string ya_books = i.title + " by " + i.author;
+            ImGui::Text(ya_books.c_str());
+            ImGui::SameLine();
+            std::string buttonStr = "Return " + i.title;
+            if(ImGui::Button(buttonStr.c_str())){
+                books.returnBook(i.trans_id, i.book_id);
+            }
+        }
     }
 }

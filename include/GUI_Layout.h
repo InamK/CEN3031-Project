@@ -4,14 +4,19 @@
 #include <ctime>
 #include "cmath"
 #include <cstring>
+#include <unordered_map>
 #include "database.h"
 #include "user_manager.h"
 #include "event_manager.h"
 #include "book_manager.h"
 #include "Book.h"
+#include "Calendar_Events.h"
+#include "Checkout.h"
 #include <iostream>
+
 //Class contains functionality for UI
 class GUI{
+    std::string id = "debug_user";
     //bools for permissions
     bool login = false;
     bool employee = false;

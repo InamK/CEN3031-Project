@@ -21,7 +21,7 @@ public:
     bool changeUserRole(const std::string& username, const std::string& newRole);
     std::vector<std::pair<int, std::string>> getAllUsers();
     int getUserId(const std::string& username);
-    bool approveUser(const std::string& username);
+    void approveUser(const std::string& username);
 private:
     Database& db;
 };
